@@ -2,7 +2,7 @@
 """Scan image/ and fonts/ folders ONCE and build a contact sheet (saves credits).
 
 Usage: python3 scan_assets.py <folder> [<folder> ...]
-Prints a compact JSON report (fonts are only counted per folder; use list_fonts.py for details) and writes contact sheets to /home/claude/contact_N.jpg
+Prints a compact JSON report and writes contact sheets to /home/claude/contact_N.jpg
 (max 16 thumbnails per sheet, each labelled with its index).
 """
 import sys, os, json
@@ -37,8 +37,8 @@ def main(folders):
                     except Exception as e:
                         images.append({'i': len(images), 'path': p, 'error': str(e)})
                 elif ext in FONT:
-                    top = os.path.relpath(p, root).split(os.sep)[0]
-                    fonts.append(top)
+                    fonts.append({'path': p, 'name': os.path.splitext(f)[0],
+                                  'kb': os.path.getsize(p) // 1024})
     sheets = []
     ok = [x for x in images if 'error' not in x]
     for s in range(0, len(ok), 16):
@@ -59,13 +59,8 @@ def main(folders):
         out = f'/home/claude/contact_{s // 16 + 1}.jpg'
         sheet.save(out, quality=80)
         sheets.append(out)
-    fam = {}
-    for t in fonts:
-        fam[t] = fam.get(t, 0) + 1
-    print(json.dumps({'image_count': len(images), 'font_files': len(fonts),
-                      'font_folders': fam,
-                      'font_hint': 'run scripts/list_fonts.py <fonts dir> for a compact family/weight list',
-                      'images': images, 'contact_sheets': sheets},
+    print(json.dumps({'image_count': len(images), 'font_count': len(fonts),
+                      'images': images, 'fonts': fonts, 'contact_sheets': sheets},
                      ensure_ascii=False, indent=1))
 
 

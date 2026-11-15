@@ -38,10 +38,3 @@
 ## Content honesty
 - No invented phone numbers, addresses, prices, statistics, reviews, certificates or awards.
 - Placeholders are in brackets, easy to spot, and listed back to the user in Step 6c.
-
-## Security (all targets, details in security.md)
-- CMS targets: no inline event handlers, no external scripts, no `javascript:` links, `{{ form_fields }}` inside every form.
-- Never include secrets, API keys or personal data in the page or schema.
-- Forms: only the four fixed field names (name, phone, email, message) with length limits; no file uploads from visitors.
-- External links that open a new tab use `rel="noopener noreferrer"`.
-- Deliver the three owner must-dos in the final message: SSL + HTTPS redirect, strong admin password + 2FA, backups.
