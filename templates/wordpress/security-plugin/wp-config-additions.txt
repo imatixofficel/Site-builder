@@ -1,0 +1,6 @@
+// ===== Add these lines to wp-config.php, ABOVE the line that says: /* That's all, stop editing! */ =====
+define( 'DISALLOW_FILE_EDIT', true );        // no code editor inside wp-admin
+define( 'FORCE_SSL_ADMIN', true );           // admin and login only over HTTPS (turn on only after SSL works)
+define( 'WP_DEBUG', false );                 // never show errors to visitors
+define( 'WP_AUTO_UPDATE_CORE', 'minor' );    // automatic security updates
+define( 'AUTOMATIC_UPDATER_DISABLED', false );

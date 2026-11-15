@@ -1,0 +1,33 @@
+# ===== Add these lines at the TOP of the .htaccess file in your WordPress root (public_html), above "# BEGIN WordPress" =====
+
+# Block XML-RPC at the server level
+<Files xmlrpc.php>
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order deny,allow
+Deny from all
+</IfModule>
+</Files>
+
+# Protect wp-config.php and files that reveal your WordPress version
+<FilesMatch "^(wp-config\.php|readme\.html|license\.txt|wp-config-sample\.php)$">
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order deny,allow
+Deny from all
+</IfModule>
+</FilesMatch>
+
+# No folder listing
+Options -Indexes
+
+# Basic security headers
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
