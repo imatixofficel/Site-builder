@@ -10,7 +10,6 @@
 [![Language](https://img.shields.io/badge/Language-فارسی-38bdf8?style=flat-square)](#)
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](#-لایسنس)
 
-### 🌐 [مشاهده سایت (نسخه HTML)](https://USERNAME.github.io/REPO/)
 
 </div>
 
