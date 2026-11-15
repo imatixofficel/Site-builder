@@ -1,5 +1,12 @@
-
 ```markdown
+<div align="center">
+
+# **به نام پروردگار**
+
+</div>
+
+---
+
 <div align="center">
 
 # 🏗️ Site Builder — سایت‌ساز هوشمند
@@ -463,7 +470,7 @@ Released under the **MIT** license. See [LICENSE](LICENSE) for details.
 
 Made with ❤️ for Persian-speaking users
 
-### 🌐 [🇮🇷 بازگشت به فارسی](#-سایتساز-هوشمند)
+### 🌐 [🇮🇷 Back to Persian](#-سایتساز-هوشمند)
 
 </div>
 
