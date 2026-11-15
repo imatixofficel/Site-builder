@@ -36,3 +36,18 @@ Hero with device mockup (built from the user's images or CSS) -> key features ->
 - Sticky or clear navigation with anchor links, mobile menu.
 - A footer with the site name, contact placeholders and social links.
 - Meta tags: title, description, theme-color, Open Graph basics.
+
+## Editable lists per site type (schema collections for the PHP / WordPress targets)
+
+| Site type | Collections (key: fields) |
+|-----------|---------------------------|
+| Online shop | products: title, text, price (text), image, link (url); categories: title, image |
+| Restaurant / cafe | menu_items: title, text, price, image; gallery: title, image |
+| Clinic | services: title, text, image; team: title, text, image; faq: title, text |
+| Portfolio | projects: title, text, image, link; services: title, text |
+| Company / services | services: title, text, image; clients: title, image; faq: title, text |
+| Education | modules: title, text; reviews: title, text; faq: title, text |
+| Event | schedule: title, text (time in title or text); speakers: title, text, image; sponsors: title, image |
+| Blog / news | WordPress target: use WordPress posts (no collection); PHP target: articles: title, text, image |
+| App landing | features: title, text, image; faq: title, text |
+Settings always include: site_name, hero_title, hero_text, hero_image, primary color, phone, address, working_hours, instagram, telegram, whatsapp (leave unknown contact values empty and wrap them in `{{#if key}}`).

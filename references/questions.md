@@ -40,3 +40,17 @@ Choose the ones that matter most for this site:
 - «نسخه انگلیسی یا دو زبانه هم لازم داری؟»
 
 After the answer, apply one change at a time and report only what changed.
+
+## Step 6 - Delivery type (tappable options)
+Question: «سایت رو چطوری می‌خوای تحویل بگیری؟» (How do you want to receive the site?)
+1. «یک فایل HTML (دوبار کلیک)» - opens by double-click, nothing to upload.
+2. «زیپ آماده آپلود روی هاست (HTML ساده)» - fast, no admin panel.
+3. «سایت با بک‌اند و پنل مدیریت (PHP)» - install on a normal host, edit texts/images/lists yourself, contact-form inbox.
+4. «قالب وردپرس + افزونه امنیتی» - for WordPress hosts, blogs and shops (WooCommerce).
+If unsure, recommend 3 for business sites with a contact form, 4 for blogs and shops with online payment.
+
+Follow-up (only for 3 or 4, one short line each, no extra question turns): tell the user the host needs PHP 7.4+ (cPanel/DirectAdmin are fine) and that an SSL certificate should be enabled.
+
+## Step 8 extra - security questions (pick at most one with the others)
+- «سایتت پشت Cloudflare هست؟» (decides the "behind proxy" tick in the installer guide)
+- «SSL روی هاستت فعاله؟» (decides whether to mention the HTTPS redirect step first)

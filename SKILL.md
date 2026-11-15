@@ -1,160 +1,172 @@
 ---
 name: site-builder
-description: Builds complete, ready-to-open websites (landing pages, online shops, portfolios, company, restaurant, clinic, education, event and personal sites) by learning the visual style from the reference images in this skill's `image/` folder, reusing those images and the fonts from `fonts/` inside the site, and guiding the user through a short question flow (work style, colors, font, site name, logo, build, improvement questions). Use this skill whenever the user asks to build, design, redo, restyle or improve a website, landing page, web page, online store or portfolio, in any language, including Persian (ساخت سایت، وب‌سایت، صفحه فرود، فروشگاه آنلاین، پورتفولیو، طراحی سایت), even if they never mention images, fonts or this skill. Optimized for low credit use - one asset scan, one build call, tiny edits afterwards.
+description: Builds complete, secure, ready-to-use websites (landing pages, shops, portfolios, company, restaurant, clinic, education, event, personal sites) in the style of the reference images in this skill's image/ folder, using its photos and fonts, via a short question flow (work style, colors, font, site name, logo, delivery type, build, improvements). Delivers a double-click HTML file, a host-ready zip, a PHP site with backend + admin panel + browser installer for cPanel/DirectAdmin hosts, or a WordPress theme + security plugin, all hardened (security headers, .htaccess, login limits, CSRF, safe uploads, 2FA) with a Persian install guide. Use whenever the user asks to build, design, redo, secure or host a website, landing page, online store, portfolio, admin panel or WordPress theme, in any language incl. Persian (ساخت سایت، وب‌سایت، پنل مدیریت، بک‌اند، وردپرس، آپلود روی هاست، امنیت سایت), even without mentioning images, fonts or this skill. Low credit use: scripts do scanning and packaging.
 ---
 
 # Site Builder (سایت‌ساز)
 
-Build an excellent, ready-to-open website that looks like the reference images in the skill folder, uses the images and fonts that come with the skill, and is guided by a short question flow. Spend as few credits as possible while keeping the result at professional quality.
+Build an excellent, secure website that looks like the reference images in the skill folder, uses the images and fonts that ship with the skill, and is delivered in the form the user can actually put on a host. Spend as few credits as possible while keeping professional quality.
 
 ## 0. Ground rules (read first, apply always)
 
-1. **Language.** Reply in the user's language. If the user writes Persian, speak Persian, write the site copy in Persian, and build the site RTL (`<html lang="fa" dir="rtl">`). Mixed content (English brand names, numbers) stays LTR inside RTL text.
-2. **Assume no coding knowledge.** Never ask technical questions, never paste code into the chat, never explain HTML. Deliver a file the user can double-click and open.
-3. **One question at a time.** Short, friendly, concrete. When a tappable-options tool such as `ask_user_input_v0` is available, use it for multiple-choice questions (2-4 short options). Steps 4 and 5 may share one message because both are free-text/file answers.
-4. **Never invent facts.** No fake phone numbers, addresses, prices, reviews, statistics or awards. Use clearly marked placeholders (for example `[شماره تماس]`) and ask for the real values in Step 6.
-5. **Follow the folders, not generic taste.** The look of the site comes from the reference images in `image/`. Only fall back to your own taste where the references say nothing.
-6. **Credit saving is a feature.** Follow section "Credit-saving rules" strictly.
+1. **Language.** Reply in the user's language. For Persian users: speak Persian, write the site copy in Persian, build RTL (`lang="fa" dir="rtl"`). Brand names/numbers stay LTR inside RTL text.
+2. **Assume no coding knowledge.** Never ask technical questions, never paste code into the chat, never explain HTML/PHP. Deliver files the user can double-click or upload.
+3. **One question at a time.** Short, friendly, concrete. When a tappable-options tool such as `ask_user_input_v0` is available, use it for multiple-choice questions (2-4 short options). Steps 4 and 5 may share one message.
+4. **Never invent facts.** No fake phone numbers, addresses, prices, reviews, statistics, awards. Use empty defaults wrapped in `{{#if}}` (CMS) or clearly marked placeholders such as `[شماره تماس]` (plain HTML) and ask for real values in Step 8.
+5. **Follow the folders, not generic taste.** The look comes from the reference images in `image/`.
+6. **Security is a requirement, not a feature.** Every delivered site gets the protections listed in `references/security.md`. Never weaken them to make something easier (no inline handlers, no external scripts in CMS targets, no skipping the install key, no world-writable permissions advice). Never ask for hosting passwords/FTP.
+7. **Be honest about limits.** Say plainly what a package does not cover (no DDoS firewall, no payment gateway in the PHP package, backups are the owner's job). The PHP/WordPress code could not be executed in the build sandbox: if the user reports an error, ask for the text of `data/error.log` or a screenshot and fix only the affected file.
+8. **Credit saving is a feature.** Follow "Credit-saving rules" strictly.
 
 ## Folder layout of this skill
 
 ```
 site-builder/
-├── SKILL.md              <- this file
-├── image/                <- style references AND photos to use in the site (any subfolders)
-├── fonts/                <- font files (.woff2 / .woff / .ttf / .otf) to use in the site
+├── SKILL.md
+├── README.md             <- Persian usage notes for the owner
+├── image/                <- style references AND photos to use (any subfolders)
+├── fonts/                <- font families (woff2/woff/ttf/otf; Persian packs with Farsi-Digits / Without-Latin variants)
 ├── references/
-│   ├── questions.md      <- exact question wording + options for each step (Persian + English)
-│   ├── color-palettes.md <- ready palettes by business field
-│   ├── site-types.md     <- section blueprint per site type
-│   └── quality-checklist.md
+│   ├── questions.md      <- exact question wording + options per step (Persian + English)
+│   ├── color-palettes.md <- palettes by business field
+│   ├── site-types.md     <- section blueprint + admin lists per site type
+│   ├── quality-checklist.md
+│   ├── cms-schema.md     <- template + schema.json spec for PHP/WordPress targets (read before writing one)
+│   └── security.md       <- what each target protects, owner checklist, honesty list, recovery recipes
+├── templates/            <- ready-made, security-hardened engines (do not rewrite them)
+│   ├── php-core/         <- PHP site: engine, installer, admin panel, login+2FA, uploads, contact inbox, .htaccess
+│   ├── wordpress/        <- theme engine (Customizer + post types + contact form) + SB Security plugin + hardening snippets
+│   ├── static/.htaccess  <- hardened rules for plain HTML hosting
+│   └── guides/           <- Persian install guides (filled by the packager)
 └── scripts/
-    ├── scan_assets.py    <- scans image/ + fonts/ once, makes a contact sheet
-    └── inline_assets.py  <- optimizes + embeds images/fonts into the finished HTML
+    ├── scan_assets.py    <- scan image/ once, contact sheet + dominant colors (fonts only counted)
+    ├── list_fonts.py     <- compact font family / weight / variant overview
+    ├── inline_assets.py  <- optimize + embed/copy images and fonts (single HTML or folder)
+    ├── render_preview.py <- render template+schema defaults to plain HTML (static targets, smoke test)
+    └── package_site.py   <- validate + build the zips for static / php / wordpress
 ```
 
-Files the user uploads in the chat (`/mnt/user-data/uploads`) count as extra assets: same rules as `image/` and `fonts/`.
+Files uploaded in chat (`/mnt/user-data/uploads`) count as extra assets, same rules as `image/` and `fonts/`.
 
 ## The flow at a glance
 
 | Step | What happens | Who acts |
 |------|--------------|----------|
-| prep | Silent one-time scan of `image/` + `fonts/` (this is the "check the folders" step; done first because it improves every later step) | Claude |
-| 1 | Ask the customer's **work style** (field + look they want) | Ask user |
-| 2 | **Pick the colors** from the field and the references and apply them | Claude (no question) |
-| 3 | Learn fonts/styles from all images and folders; **ask which font** the user wants | Ask user |
+| prep | Silent one-time scan of `image/` and `fonts/` | Claude |
+| 1 | Ask the customer's **work style** (field + look) | Ask user |
+| 2 | **Pick colors** from the field and the references | Claude (no question) |
+| 3 | Learn fonts from folders/images; **ask which font** | Ask user |
 | 4 | Ask the **site name** | Ask user |
-| 5 | Ask for the **logo**; no logo means no logo | Ask user |
-| 6 | **Build** the site, then ask improvement questions | Claude + user |
+| 5 | Ask for the **logo**; none means no logo | Ask user |
+| 6 | Ask the **delivery type** (file / host zip / PHP + panel / WordPress) | Ask user |
+| 7 | **Build** and package | Claude |
+| 8 | Improvement questions, then one change at a time | Claude + user |
 
-Do not skip or reorder the user-facing questions (1, 3, 4/5, 6). Never ask something the user already told you; extract answers from their first message and confirm only what is missing.
+Never ask something the user already told you; extract answers from their first message and confirm only what is missing. Skip Step 6 when the user already said it (host, admin panel, backend, WordPress, "just a file").
 
 ## Prep - scan the folders once (silent)
 
-1. Locate this skill's folder (the folder that contains this `SKILL.md`). Run once:
+1. Find this skill's folder (the one containing this `SKILL.md`) and run once:
    `python3 <skill>/scripts/scan_assets.py <skill>/image <skill>/fonts [/mnt/user-data/uploads]`
-2. `view` the contact sheet(s) it prints (`/home/claude/contact_N.jpg`). **Do not open images one by one** unless a detail is unclear; the sheet plus the dominant-color list is enough and costs a fraction of the credits.
-3. Sort every image into one of these roles (by looking, not by filename only):
-   - **style reference**: screenshots or designs of UIs, websites, app screens, posters.
-   - **site photo**: photographs, product shots, illustrations, textures, backgrounds, people, places.
-   - **logo**: a mark/wordmark. Only treat it as the customer's logo if the user says so.
-4. Write a compact **Design Brief** for yourself (a few lines, not shown to the user unless asked):
-   - Style DNA from the references: layout pattern (hero type, grid, card style), corner radius (sharp/soft/pill), shadows or glass/blur, border use, spacing density (airy/compact), image treatment (full-bleed, masked, rounded, overlay), motion hints, overall mood.
-   - Palette seen in the references (use the dominant colors from the scan).
-   - Type feel seen in the references: serif/sans/display, weight, size contrast, letter-spacing, case.
-   - Asset manifest: file → role → where it will be used.
-5. If both folders are empty and the user uploaded nothing, say so in one sentence, then continue using the field-based palettes and `references/site-types.md`. If `frontend-design` is available, skim it only in this situation.
+   `python3 <skill>/scripts/list_fonts.py <skill>/fonts`
+2. `view` the contact sheet(s) printed by the scan (`/home/claude/contact_N.jpg`). **Do not open images one by one.**
+3. Sort every image by role (by looking): **style reference** (UI/web/app/poster screenshots), **site photo** (photos, products, illustrations, backgrounds), **logo** (only the customer's logo if the user says so).
+4. Write a short **Design Brief** for yourself: layout pattern (hero type, grid, cards), corner radius, shadow or glass/blur, borders, spacing density, image treatment, motion hints, mood; palette seen (dominant colors); type feel (serif/sans/display, weight, contrast); asset manifest (file -> role -> use).
+5. If both folders are empty and nothing was uploaded, say so in one sentence and continue with the field-based palettes and `references/site-types.md`. Only then skim `frontend-design` if available.
 
 ## Step 1 - Work style (ask)
 
-Ask what the customer does and what look they want. Use the wording in `references/questions.md`.
-- Field/work: shop, restaurant/cafe, clinic, portfolio, company, education, personal brand, blog/news, event, app landing, other.
-- Look: offer 3 style options. **Option 1 must be the style learned from the reference images** (describe it in plain words, for example "نرم و شیشه‌ای مثل عکس‌های مرجع"). Add two contrasting alternatives that suit the field.
-- If the first message already answers both, skip the question and state your understanding in one line.
+Ask what the customer does and what look they want (wording in `references/questions.md`). Field: shop, restaurant/cafe, clinic, portfolio, company, education, personal brand, blog/news, event, app landing, other. Look: 3 options, **option 1 = the style learned from the reference images** (plain words), plus two contrasting options suited to the field. If the first message already answers both, state your understanding in one line instead of asking.
 
 ## Step 2 - Colors (no question)
 
-Pick the palette yourself:
-1. Start from the field using `references/color-palettes.md`.
-2. Blend with the reference colors from the Design Brief: the references win on mood, the field wins on meaning (trust, appetite, calm, luxury, energy).
-3. Fix a final palette of: background, surface, text, muted text, primary, accent, plus a success/danger pair if the site needs them. All as CSS variables.
-4. Check contrast: body text at least 4.5:1, large text at least 3:1.
-5. Announce it in one short line with hex codes and the reason, for example: "رنگ‌ها: پس‌زمینه #0B1020، اصلی #5B8CFF، تأکید #FFC857 - مناسب حوزه آموزش و هماهنگ با عکس‌های مرجع." The user can change it later in Step 6.
+1. Start from the field in `references/color-palettes.md`.
+2. Blend with the reference colors: references decide mood, the field decides meaning.
+3. Fix background, surface, text, muted, primary, accent (+ success/danger if needed) as CSS variables. Text contrast >= 4.5:1 (large text 3:1).
+4. Announce in one line with hex codes and the reason. The user can change it in Step 8.
 
 ## Step 3 - Fonts (learn, then ask)
 
-1. **Fonts folder.** List what is in `fonts/`. Group files into families and weights (Regular/Medium/Bold). These are the first choice because they are bundled and work offline.
-2. **Fonts seen in the images.** Look at the typography in the style references and guess the closest typeface. Be honest ("شبیه به ... است") and never claim certainty. Pick the closest match that is either in `fonts/` or free and safe (see below).
-3. **Ask which font the user wants.** Offer 3-4 options, in this order:
-   - the font matching the reference images,
-   - the best family from `fonts/` (if different),
-   - one more that fits the field,
-   - "یک فونت دیگر / فونت خودم" (user supplies a font file or name).
-4. Safe free families if nothing is bundled: Persian - Vazirmatn, Estedad, Shabnam, Sahel; Latin - Inter, DM Sans, Poppins, Montserrat, Space Grotesk, Playfair Display. If the user brings another font, remind them in one short sentence to check its license for commercial use.
-5. **How fonts get into the site.**
-   - Bundled files in `fonts/` are declared with `@font-face` using the relative path `fonts/<file>`; `inline_assets.py` embeds them so the site works offline.
-   - If the chosen font is not bundled and there is no way to download it, use a Google Fonts `<link>` (works when the user is online) and always add a strong fallback stack (`'Vazirmatn', Tahoma, system-ui, sans-serif`). Tell the user once, simply: "برای نمایش دقیق فونت، اینترنت لازم است؛ اگر فایل فونت را بدهید داخل سایت قرار می‌دهم."
-   - Use at most 2 families (one display/heading, one body). Persian sites: a Persian-capable family first, Latin fallback second.
+1. Read the `list_fonts.py` overview. Persian packs come in variants: plain = Persian+Latin glyphs with Latin digits; `Farsi-Digits` (FD) = Persian digits everywhere (best default for Persian sites); `Without-Latin` (WOL) = Persian glyphs only (lighter, pair with a Latin font for English words). Prefer woff2, then woff, ttf. Ignore eot/svg. Large decorative packs (for example "other font") are for headlines only; show names only if the user asks.
+2. Guess the typeface seen in the style references ("شبیه ... است", never certain) and map it to the closest available family.
+3. **Ask which font the user wants**: 3-4 options: the one matching the references, the best family from `fonts/`, one more suited to the field, "فونت دیگر / فونت خودم".
+4. Use at most 2 families (headline + body) and 2-3 weights (Regular/Medium/Bold). Declare with `@font-face` and the **relative path of the file** from `fonts/` (get exact paths with `list_fonts.py <skill>/fonts --family <name>`):
+   `@font-face{font-family:'Vazir';src:url('fonts/vazir-font-v18.0.0/Farsi-Digits/Vazir-FD.woff2') format('woff2');font-weight:400;font-display:swap}`
+   Always add a fallback stack (`'Vazir', Tahoma, system-ui, sans-serif`). The packager copies only the files actually referenced.
+5. If the chosen font is not bundled, use a Google Fonts `<link>` (needs internet; tell the user) and the same fallback stack. Remind the user to check licenses for fonts they bring.
 
-## Step 4 - Site name (ask)
+## Step 4 - Site name (ask) and Step 5 - Logo (ask)
 
-Ask for the site/brand name. Use it in `<title>`, header, footer, and meta description. Never translate or alter it.
+Ask both in one message (see `questions.md`). Use the exact name everywhere (title, header, footer, meta). Logo given: header + footer + favicon if square-ish; do not repaint it. No logo: **build without one, never invent or draw a logo**; the header shows the site name as text.
 
-## Step 5 - Logo (ask)
+## Step 6 - Delivery type (ask)
 
-Ask for the logo in the same message as Step 4 (as two short lines), or right after. Rules:
-- Logo provided: place it in the header and footer, create a favicon from it if it is square enough, and pull an accent color from it only if it improves harmony (do not repaint the logo).
-- User says they have none (or ignores it): **build without a logo.** Do not invent or draw a logo. The header shows the site name as plain text in the heading font.
+Offer these (tappable options when available), recommending by need:
+1. **یک فایل HTML** - opens by double-click, nothing to upload.
+2. **زیپ آماده آپلود روی هاست (HTML ساده)** - fast static site with hardened `.htaccess`; no panel, forms cannot work.
+3. **سایت PHP با بک‌اند و پنل مدیریت** - runs on any normal cPanel/DirectAdmin host (PHP 7.4+), browser installer, admin panel for texts/colors/images/lists, contact inbox, login with limits and optional 2FA. Recommend when the owner wants to edit content themselves or needs a contact form.
+4. **قالب وردپرس + افزونه امنیتی** - for a host that already runs (or will run) WordPress; editing through Customizer and the WordPress menu; best for blogs, big content sites, and shops with WooCommerce.
+If the user is unsure: recommend option 3 for business sites with a contact form and option 4 for blogs/shops with online payment.
 
-## Step 6 - Build, then improve
+## Step 7 - Build and package
 
-### 6a. Build in ONE pass
-1. Choose sections from `references/site-types.md` for the field. Keep the page focused: usually 5-8 sections.
-2. Write one `index.html` (CSS and JS inline, no frameworks, no build step) in `/home/claude/build/index.html`. Reference assets by **relative path** (`image/hero.jpg`, `fonts/Vazir-Bold.woff2`). Never paste base64 yourself.
-3. Apply the Design Brief faithfully: same radius, shadow/glass, spacing, card patterns, image treatment, and mood as the references. Use CSS variables for the palette and type scale.
-4. **Use the images from `image/`** for hero, cards, galleries, backgrounds and banners, matched to their meaning. Do not leave good photos unused; do not stretch or crop faces badly (`object-fit: cover`, sensible `object-position`). Add real `alt` text and `loading="lazy"` below the fold. Never use remote or stock images.
-5. Write real, persuasive copy in the user's language that fits the field and the site name. No lorem ipsum. Unknown facts are marked placeholders.
-6. Build quality in from the start (see `references/quality-checklist.md`): fully responsive (mobile first), RTL-correct for Persian, sticky or clear navigation, smooth anchor scrolling, visible focus states, hover/active states, subtle scroll-reveal animation that respects `prefers-reduced-motion`, one clear call-to-action per section, accessible contrast, semantic tags, SEO meta tags.
-7. Make it come alive without bloat: a few well-chosen micro-interactions (menu toggle, tabs, FAQ accordion, gallery lightbox, counters) written in small vanilla JS, only if the field benefits.
+Always build in **one pass**, then package with the scripts. `<skill>` = this skill's folder. Work in `/home/claude/build/`.
 
-### 6b. Package
-1. Run: `python3 <skill>/scripts/inline_assets.py /home/claude/build/index.html /mnt/user-data/outputs/<site-name>.html --roots <skill>/image <skill>/fonts /mnt/user-data/uploads`
-   This optimizes the images (resized, WebP) and embeds images and fonts, giving **one file that opens by double-click**.
-2. Read the printed report. Fix every `MISSING` line (wrong path or file name) with a tiny edit and rerun. If the file is over about 8 MB, rerun with `--mode folder` to `/mnt/user-data/outputs/<site-name>/` and deliver it as a zip.
-3. Deliver with the file-presenting tool (`present_files`). If a hosted preview tool is available and the user would benefit from a link, you may publish instead, but the downloadable file is the default deliverable.
-4. In the chat, say in two or three lines: what was built, which style/palette/font were used, and how to open it ("فایل را دوبار کلیک کنید تا در مرورگر باز شود").
+### 7a. Single HTML file (target 1)
+Write one `index.html` (CSS/JS inline, no frameworks). Assets by relative path (`image/x.jpg`, `fonts/<family>/<file>`). Then:
+`python3 <skill>/scripts/inline_assets.py /home/claude/build/index.html /mnt/user-data/outputs/<site-name>.html --roots <skill>/image <skill>/fonts /mnt/user-data/uploads`
+Read the report, fix every `MISSING`. Over ~8 MB: use `--mode folder`.
 
-### 6c. Improvement questions (after the first version)
-Ask up to 3 short questions in one go (tappable options when possible) that would most improve the result. Pick from:
-- **Content:** real services/products list, prices (or "price on request"), about text, working hours, address, phone, WhatsApp/Telegram/Instagram links, map.
-- **Sections:** anything to add, remove or reorder (testimonials, FAQ, gallery, pricing, blog, contact form).
-- **Look:** lighter/darker, rounder/sharper, calmer/bolder, change the palette or font.
-- **Goal:** the one action visitors should take (call, order, book, message).
-- **Languages:** add English/Persian version, language switch.
+### 7b. Static host zip (target 2)
+Write the plain `index.html` as above (contact: phone/WhatsApp/Telegram/mailto buttons, no `<form>`), then:
+`python3 <skill>/scripts/package_site.py --target static --name "<Site Name>" --html /home/claude/build/index.html --roots <skill>/image <skill>/fonts /mnt/user-data/uploads --out /mnt/user-data/outputs`
+Outputs: `<slug>-static-host.zip` + `<slug>-static-GUIDE-FA.txt`.
 
-Then iterate **one change at a time**: apply the single requested change, tell the user it is done, hand back only what changed, wait for the next change.
+### 7c. PHP site with backend and admin panel (target 3) and 7d. WordPress (target 4)
+1. **Read `references/cms-schema.md` once** (template syntax, schema, CSP-safe rules). Do not read the PHP templates; they are finished and tested by the build scripts.
+2. Write `/home/claude/build/index.tpl.html` (the design, with `{{ }}` tags) and `/home/claude/build/schema.json` (editable settings + lists + default content + `contact_form`). Everything the owner may change must be editable; defaults make the site look complete immediately.
+3. Run the packager (it validates first; fix reported errors with tiny `str_replace` edits and rerun):
+   `python3 <skill>/scripts/package_site.py --target php --name "<Site Name>" --html /home/claude/build/index.tpl.html --schema /home/claude/build/schema.json --roots <skill>/image <skill>/fonts /mnt/user-data/uploads --out /mnt/user-data/outputs`
+   (`--target wordpress` for WordPress.)
+4. Outputs: PHP -> `<slug>-php-host.zip` + `<slug>-php-GUIDE-FA.txt` (contains the one-time install key; tell the user to keep it on their computer and never upload it). WordPress -> `<slug>-wp-theme.zip`, `<slug>-sb-security.zip`, `<slug>-wp-hardening.txt`, `<slug>-wp-GUIDE-FA.txt`.
+5. A plain static version of the same design is free: `python3 <skill>/scripts/render_preview.py index.tpl.html schema.json /home/claude/build/index.html` then 7b (replace the form with contact buttons).
+6. Shop sites: PHP package = catalog (products list + "order by phone/WhatsApp/Telegram/contact form"); say clearly it has no online payment. For payment use WordPress + WooCommerce (the theme is WooCommerce-ready) with a trusted gateway plugin.
 
-## Editing an existing site (follow-up turns)
+### Design rules for every build
+- Match the Design Brief (radius, glass/shadow, spacing, card patterns, image treatment, mood). Use CSS variables for palette and type scale.
+- Use the photos from `image/` (hero, cards, galleries, banners) matched to their meaning; `object-fit: cover`, sensible `object-position`, real `alt`, `loading="lazy"` below the fold. Never remote/stock images.
+- Real persuasive copy in the user's language; no lorem ipsum.
+- Quality from the start (`references/quality-checklist.md`): mobile-first responsive, RTL-correct, clear navigation, focus/hover states, subtle reveal animations that respect `prefers-reduced-motion`, one call-to-action per section, semantic HTML, SEO meta tags, small vanilla JS only.
 
-- Edit the built `index.html` in place with small `str_replace` edits; never rewrite the whole file for a small change; never re-scan assets unless new files appeared.
-- After a change, rerun `inline_assets.py` and deliver the updated file. In the message, name only the part that changed ("فقط بخش تماس عوض شد").
-- If the user asks for a new section, add only that section's HTML/CSS and reuse the existing variables and patterns.
+### Delivery message (3-5 lines, Persian for Persian users)
+Use `present_files` for every output file. Say: what was built, the style/palette/font used, where to upload (public_html / WordPress themes), and that the step-by-step Persian guide is in the GUIDE file. For PHP: the install key is in the guide, open `/install.php`, then `/admin/`. Remind the three security must-dos: SSL + HTTPS redirect, strong admin password + 2FA, backups.
+
+## Step 8 - Improvement questions, then one change at a time
+
+Ask up to 3 short questions at once: real content (phone, address, hours, social links, services/prices), sections to add/remove, look changes, the single main goal (call, order, book, message), languages, and security extras (behind Cloudflare? SSL ready?). Then apply **one change at a time**: make the single change, say it is done, hand back only the files that changed, wait for the next request.
+
+## Editing a site delivered earlier
+
+- Same session: edit `/home/claude/build/index.tpl.html` / `schema.json` (or `index.html`) with small `str_replace` edits and rerun the packager; deliver only the files that changed (for the PHP package the changed zip is still the unit the user uploads; say which files inside changed).
+- New session: ask the user to upload the previous zip, extract it, edit the changed files in place (`theme/index.tpl.html` and `theme/schema.json` for PHP; `index.tpl.html` and `schema.json` inside the theme folder for WordPress) with `str_replace`, and re-zip. Do not rerun the asset scan unless new files appeared.
+- When the owner already has live data (PHP site installed), tell them: upload only the changed files; texts they edited in the panel are stored in the database and are not overwritten. Schema changes (new editable fields or lists) appear automatically; removed fields simply stop showing.
 
 ## Credit-saving rules (strict)
 
-1. Scan assets **once**, with the script, and look at the contact sheet instead of every image.
-2. Keep the Design Brief short and reuse it; do not re-analyze the images each turn.
-3. Build the full page in **one** file-creation call. No draft-then-rewrite, no polish passes, no "let me double check by reading it back".
-4. Reference assets by relative path and let `inline_assets.py` do the embedding and compression. Never output base64 or large data blobs.
-5. Edits are tiny `str_replace` calls, not full rewrites.
-6. Do not run screenshot/render loops unless the user asks or the report shows an error. The one automatic check is the `inline_assets.py` report.
-7. Questions are batched sensibly and never repeated. Replies are short; no long explanations of what you did.
-8. Do not install packages or browse the web unless a task truly needs it.
+1. Scan assets **once** (scripts), look at the contact sheet only; never list hundreds of font files.
+2. Short Design Brief, reused; no re-analysis each turn.
+3. Build the whole page/template **once**; no draft-then-rewrite, no polish passes, no read-back.
+4. Reference assets by relative path; scripts embed/copy/compress. Never output base64 or large data.
+5. Never re-read or re-write the ready-made PHP/WordPress templates; the packager copies them.
+6. Edits are tiny `str_replace` calls; rerun the packager.
+7. No screenshot loops unless the user asks; the validator/packager reports are the check.
+8. Batch questions sensibly, never repeat them, keep replies short.
+9. No package installs or web browsing unless truly needed.
 
 ## What a great result looks like
 
-- It is recognizably in the style of the reference images, not a generic template.
-- The chosen font, palette and the user's photos are all visibly used.
-- It opens by double-click, looks right on a phone and a laptop, and Persian text is correctly aligned and shaped.
-- Every placeholder is clearly marked and listed back to the user in Step 6c.
-- The user can say "change X" and receive only X.
+- Recognizably in the style of the references, with the user's font, palette and photos visibly used.
+- Opens by double-click or installs in minutes on a normal host; Persian text aligned and shaped correctly; phone and laptop both look right.
+- The owner can change texts, colors, images and lists without code (PHP panel or WordPress).
+- Security protections are active by default and the owner knows the three things they must still do.
+- Placeholders are listed back to the user; every output file is presented; the user can say "change X" and receive only X.
